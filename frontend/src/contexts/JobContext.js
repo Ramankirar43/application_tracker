@@ -2,6 +2,7 @@ import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useAuth } from './AuthContext';
 import api from '../services/api';
+import axios from 'axios';
 
 const JobContext = createContext();
 
