@@ -6,6 +6,11 @@ import './index.css';
 import App from './App';
 import { AuthProvider } from './contexts/AuthContext';
 import { JobProvider } from './contexts/JobContext';
+import axios from 'axios';
+import config from './config';
+
+// Set axios defaults
+axios.defaults.baseURL = config.API_URL;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

@@ -1,0 +1,11 @@
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "env": {
+    "REACT_APP_API_URL": "https://application-tracker-ramank.onrender.com",
+    "REACT_APP_SOCKET_URL": "https://application-tracker-ramank.onrender.com"
+  },
+  "buildCommand": "npm run build",
+  "outputDirectory": "build"
+}
