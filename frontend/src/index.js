@@ -7,10 +7,16 @@ import App from './App';
 import { AuthProvider } from './contexts/AuthContext';
 import { JobProvider } from './contexts/JobContext';
 import axios from 'axios';
-import config from './config';
+import config, { getAuthToken } from './config';
 
 // Set axios defaults
 axios.defaults.baseURL = config.API_URL;
+
+// Set auth token on startup if it exists
+const token = getAuthToken();
+if (token) {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

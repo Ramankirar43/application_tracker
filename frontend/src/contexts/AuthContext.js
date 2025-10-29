@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import api from '../services/api';
 
 const AuthContext = createContext();
 
@@ -63,14 +64,13 @@ export const AuthProvider = ({ children }) => {
     const loadUser = async () => {
       if (state.token) {
         try {
-          const response = await axios.get('/api/auth/me');
+          const response = await api.get('/api/auth/me');
           dispatch({ type: AUTH_ACTIONS.SET_USER, payload: response.data.user });
         } catch (error) {
           console.error('Error loading user:', error);
           // Clear everything on auth error
           localStorage.clear();
           sessionStorage.clear();
-          delete axios.defaults.headers.common['Authorization'];
           dispatch({ type: AUTH_ACTIONS.LOGOUT });
         }
       } else {
@@ -86,7 +86,7 @@ export const AuthProvider = ({ children }) => {
     try {
       dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: true });
       
-      const response = await axios.post('/api/auth/login', {
+      const response = await api.post('/api/auth/login', {
         email,
         password
       });

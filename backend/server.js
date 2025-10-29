@@ -116,19 +116,38 @@ app.use('*', (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-server.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📧 Email service: ${process.env.MAIL_USER ? 'Configured' : 'Not configured'}`);
-  console.log(`🔐 JWT Secret: Configured`);
+// Function to try different ports if the default one is in use
+const startServer = (port) => {
+  // Convert port to number to ensure proper incrementing
+  const portNumber = parseInt(port, 10);
   
-  // Initialize deadline notification scheduler
-  if (process.env.MAIL_USER) {
-    const scheduler = scheduleDeadlineChecks();
-    console.log(`📅 Deadline notification scheduler: Initialized`);
-  } else {
-    console.log(`📅 Deadline notification scheduler: Not initialized (email service not configured)`);
-  }
-});
+  server.listen(portNumber)
+    .on('error', (err) => {
+      if (err.code === 'EADDRINUSE') {
+        console.log(`⚠️ Port ${portNumber} is already in use, trying ${portNumber + 1}...`);
+        startServer(portNumber + 1);
+      } else {
+        console.error('❌ Server error:', err);
+      }
+    })
+    .on('listening', () => {
+      const actualPort = server.address().port;
+      console.log(`🚀 Server running on port ${actualPort}`);
+      console.log(`📧 Email service: ${process.env.MAIL_USER ? 'Configured' : 'Not configured'}`);
+      console.log(`🔐 JWT Secret: Configured`);
+      
+      // Initialize deadline notification scheduler
+      if (process.env.MAIL_USER) {
+        const scheduler = scheduleDeadlineChecks();
+        console.log(`📅 Deadline notification scheduler: Initialized`);
+      } else {
+        console.log(`📅 Deadline notification scheduler: Not initialized (email service not configured)`);
+      }
+    });
+};
+
+// Start the server
+startServer(PORT);
 
 
 // const express = require('express');

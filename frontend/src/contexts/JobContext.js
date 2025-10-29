@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useAuth } from './AuthContext';
+import api from '../services/api';
 
 const JobContext = createContext();
 
@@ -116,7 +116,7 @@ export const JobProvider = ({ children }) => {
         ...state.filters
       });
 
-      const response = await axios.get(`/api/jobs?${params}`);
+      const response = await api.get(`/api/jobs?${params}`);
       const { jobs, pagination, stats } = response.data;
       
       dispatch({ 
@@ -135,7 +135,7 @@ export const JobProvider = ({ children }) => {
     try {
       dispatch({ type: JOB_ACTIONS.SET_LOADING, payload: true });
       
-      const response = await axios.post('/api/jobs', jobData);
+      const response = await api.post('/api/jobs', jobData);
       const newJob = response.data.job;
       
       dispatch({ type: JOB_ACTIONS.ADD_JOB, payload: newJob });
@@ -155,7 +155,7 @@ export const JobProvider = ({ children }) => {
     try {
       dispatch({ type: JOB_ACTIONS.SET_LOADING, payload: true });
       
-      const response = await axios.put(`/api/jobs/${jobId}`, jobData);
+      const response = await api.put(`/api/jobs/${jobId}`, jobData);
       const updatedJob = response.data.job;
       
       dispatch({ type: JOB_ACTIONS.UPDATE_JOB, payload: updatedJob });
@@ -173,7 +173,7 @@ export const JobProvider = ({ children }) => {
   // Delete job function
   const deleteJob = async (jobId) => {
     try {
-      await axios.delete(`/api/jobs/${jobId}`);
+      await api.delete(`/api/jobs/${jobId}`);
       
       dispatch({ type: JOB_ACTIONS.DELETE_JOB, payload: jobId });
       toast.success('Job application deleted successfully!');
@@ -189,7 +189,7 @@ export const JobProvider = ({ children }) => {
   // Update job status function
   const updateJobStatus = async (jobId, status, roundNumber) => {
     try {
-      const response = await axios.patch(`/api/jobs/${jobId}/status`, {
+      const response = await api.patch(`/api/jobs/${jobId}/status`, {
         status,
         roundNumber
       });
